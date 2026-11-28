@@ -72,7 +72,7 @@ h1:hover{animation:gl .3s steps(2) 3}
 .show #glow{opacity:.8}
 @media(hover:none){#glow{display:none}}
 #gallery{position:relative;z-index:2;max-width:900px;margin:0 auto;padding:3rem 1rem 8rem}
-#gallery h2{text-align:center;font-weight:300;letter-spacing:.35em;text-transform:uppercase;font-size:1rem;color:var(--mut);margin:0 0 2rem;text-shadow:0 0 14px var(--acc)}
+#gallery h2,#lyrics h2{text-align:center;font-weight:300;letter-spacing:.35em;text-transform:uppercase;font-size:1rem;color:var(--mut);margin:0 0 2rem;text-shadow:0 0 14px var(--acc)}
 .grid{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:clamp(80px,18vw,160px);grid-auto-flow:dense;gap:.8rem}
 .big{grid-column:span 2;grid-row:span 2;border-radius:30px!important}
 .tall{grid-row:span 2;border-radius:999px 999px 18px 18px!important}
@@ -89,6 +89,14 @@ h1:hover{animation:gl .3s steps(2) 3}
 .t img{width:100%;height:100%;object-fit:cover;display:block}
 [data-style=retro] .t{border-radius:0!important;border:3px solid var(--fg);box-shadow:6px 6px 0 var(--acc)}
 [data-style=minimal] .t{border-radius:0!important;border:0}
+#lyrics{position:relative;z-index:2;max-width:560px;margin:0 auto;padding:3rem 1rem 0;text-align:center}
+.ly{position:relative;height:15rem;overflow-y:auto;scroll-behavior:smooth;scrollbar-width:none;padding:6rem 0;-webkit-mask-image:linear-gradient(transparent,#000 25%,#000 75%,transparent);mask-image:linear-gradient(transparent,#000 25%,#000 75%,transparent)}
+.ly::-webkit-scrollbar{display:none}
+.ly p{margin:.55rem 0;font-size:1rem;color:var(--mut);opacity:.45;cursor:pointer;transition:all .4s}
+.ly p:hover{opacity:.85}
+.ly p.on{opacity:1;color:var(--fg);font-size:1.4rem;text-shadow:0 0 18px var(--acc);transform:scale(1.04)}
+.lh{font-size:.68rem;color:var(--mut);letter-spacing:.2em;text-transform:uppercase;opacity:.6;margin:.5rem 0 0}
+[data-style=retro] .ly p.on{color:var(--acc);text-shadow:2px 2px 0 var(--fg)}
 /* picker */
 #panel{position:fixed;z-index:5;left:50%;bottom:calc(.8rem + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;transition:.8s 1s;display:flex;gap:.8rem;align-items:center;padding:.5rem .8rem;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.15);border-radius:99px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);max-width:calc(100% - 1rem);overflow-x:auto}
 .show #panel{opacity:1;transform:translate(-50%,0)}
@@ -120,6 +128,7 @@ h1:hover{animation:gl .3s steps(2) 3}
   </section>
   <div class="hint" id="hint">scroll down<i></i></div>
 </main>
+<section id="lyrics"><h2>♪ lyrics</h2><div class="ly" id="ly"></div><p class="lh">tap a line to jump there</p></section>
 <section id="gallery"><h2>&lt;/&gt; gallery</h2><div class="grid" id="grid"></div></section>
 <div id="glow"></div>
 <div id="panel"></div>
@@ -141,6 +150,41 @@ var GALLERY=[
   "",          // 7 small
   "",          // 8 big square
   ""           // 9 wide pill
+];
+
+// ——— LYRICS: [seconds into the song, "your line"] — type your own lyrics here ———
+// the page highlights the current line while the song plays, and tapping a line jumps the song to that time
+var LYRICS=[
+  [0,"♪"],
+  [12,"             "],
+  [13,"hold my hand until we turn to ashes"],
+  [16,"love me til they put me in my casket"],
+  [20,"i got all these feeling that im masking"],
+  [24,"can i lay it on you thats what im asking"]
+  [27,"red wine kissing in the house that your parents"]
+  [30,"got for you, rented"]
+  [32,"howd you forget it?"]
+  [34,"i think about you and nothing else"]
+  [36,"so if you would just come over"]
+  [37,"i could show you for myself"]
+  [39,"its nights like these"]
+  [41,"when i need your love"]
+  [43,"when i need someone"]
+  [45,"thatll heal my soul"]
+  [47,"its nights like this"]
+  [49,"nights like, nights like this"]
+  [52,"ooh, ooh"]
+  [54,"♪"]
+  [58,"nights like these"]
+  [61,"♪"]
+  [65,"ooh, ooh"]
+  [67,"its nights like these"]
+  [68,"when i need your love"]
+  [70,"when i need someone"]
+  [71,"thatll heal my soul"]
+  [73,"its nights like this"]
+  [76,"nights like, nights like this"]
+  [79,"ooh, ooh"]
 ];
 var SHOW_PICKER=true;         // false = hide the theme/style bar and always use the defaults above
 var TAGLINES=["coding","dreamer","night owl","coffee enjoyer","always building","music on repeat"];
@@ -214,9 +258,18 @@ $("badge").onclick=function(){scramble($("name"),"ven")};
 var ST=["online","🎧 vibing","☕ caffeinated","🌙 nocturnal","⚡ building","time"],si=0,tn=$("tn");
 function stat(){var v=ST[si++%ST.length];if(v=="time")v="🕒 "+new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});scramble(tn,v,55)}
 stat();setInterval(stat,3200);tn.onclick=stat;
+// lyrics
+var AU=null,T0=performance.now(),LY=$("ly"),cur=-1;
+if(!LYRICS.length)$("lyrics").style.display="none";
+LYRICS.forEach(function(l){var p=document.createElement("p");p.textContent=l[1]||"♪";p.onclick=function(){seek(l[0])};LY.appendChild(p)});
+function now(){return AU?AU.currentTime:(performance.now()-T0)/1000}
+function seek(t){if(AU){AU.currentTime=t;AU.play().catch(function(){})}else T0=performance.now()-t*1000}
+setInterval(function(){var t=now(),k=-1;LYRICS.forEach(function(l,i){if(l[0]<=t)k=i});
+ if(k==cur)return;cur=k;var ps=LY.children;for(var i=0;i<ps.length;i++)ps[i].classList.toggle("on",i==k);
+ if(k>-1){var e=ps[k];LY.scrollTop=e.offsetTop-LY.clientHeight/2+e.offsetHeight/2}},250);
 // music
 var ac,master,on=true;
-function music(){if(MUSIC_URL){var a=new Audio(MUSIC_URL);a.loop=true;a.volume=.5;a.play().catch(function(){});master={gain:{set value(v){a.volume=v>0?.5:0}}};$("np").textContent="♪ "+MUSIC_TITLE;return}
+function music(){if(MUSIC_URL){var a=AU=new Audio(MUSIC_URL);a.loop=true;a.volume=.5;a.play().catch(function(){});master={gain:{set value(v){a.volume=v>0?.5:0}}};$("np").textContent="♪ "+MUSIC_TITLE;return}
  ac=new (window.AudioContext||window.webkitAudioContext)();master=ac.createGain();master.gain.value=.12;master.connect(ac.destination);
  var notes=[220,261.63,329.63,392],i=0;
  function play(){if(!on)return;var o=ac.createOscillator(),g=ac.createGain();o.type="sine";o.frequency.value=notes[i++%4]*(i%8<4?1:1.5);
@@ -224,7 +277,7 @@ function music(){if(MUSIC_URL){var a=new Audio(MUSIC_URL);a.loop=true;a.volume=.
   o.connect(g);g.connect(master);o.start();o.stop(ac.currentTime+2.5)}
  play();setInterval(play,1200)}
 $("mute").onclick=function(){on=!on;this.textContent=on?"♪ on":"♪ off";if(master)master.gain.value=on?.12:0};
-$("enter").onclick=function(){this.classList.add("gone");document.body.classList.add("show");scramble($("name"),"ven");setTimeout(function(){cd.dataset.t=1;cd.style.transition="transform .12s ease-out,box-shadow .4s,border-color .4s,background .4s"},1400);try{music()}catch(e){}};
+$("enter").onclick=function(){this.classList.add("gone");document.body.classList.add("show");T0=performance.now();scramble($("name"),"ven");setTimeout(function(){cd.dataset.t=1;cd.style.transition="transform .12s ease-out,box-shadow .4s,border-color .4s,background .4s"},1400);try{music()}catch(e){}};
 </script>
 </body>
 </html>
