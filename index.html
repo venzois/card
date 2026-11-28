@@ -129,7 +129,19 @@ var DEFAULT_THEME="purple";   // purple | reeses | ocean | sakura | matrix
 var DEFAULT_STYLE="glass";    // glass | neon | retro | minimal
 var MUSIC_URL="nightslikethese.mp3";             // link to YOUR audio file (mp3) once you host this page yourself; empty = built-in ambient tune
 var MUSIC_TITLE="Nights Like These · The Kid LAROI";  // shown only when MUSIC_URL is set
-var GALLERY=[];               // images for the scroll section, e.g. ["pic1.jpg","pic2.jpg"] (empty = placeholders)
+// ——— GALLERY: your picture file names, in order (keep the pictures in the same folder as index.html) ———
+// each line is one tile; the comment shows its shape. "" = empty "pic soon" slot. Add more lines any time.
+var GALLERY=[
+  "idle.jpg",  // 1 big square
+  "",          // 2 small
+  "",          // 3 tall arch
+  "",          // 4 wide pill
+  "",          // 5 small
+  "",          // 6 tall arch
+  "",          // 7 small
+  "",          // 8 big square
+  ""           // 9 wide pill
+];
 var SHOW_PICKER=true;         // false = hide the theme/style bar and always use the defaults above
 var TAGLINES=["coding","dreamer","night owl","coffee enjoyer","always building","music on repeat"];
 var THEMES=[
@@ -178,9 +190,9 @@ var sv=DEFAULT_THEME,ss=DEFAULT_STYLE;
 if(SHOW_PICKER){try{sv=localStorage.getItem("th")||sv;ss=localStorage.getItem("st")||ss}catch(e){}}else P.style.display="none";
 setTheme(THEMES.filter(function(t){return t.id==sv})[0]||THEMES[0]);setStyle(STYLES.indexOf(ss)>-1?ss:"glass");
 // gallery + scroll
-(function(){var g=$("grid"),PAT=["big","","tall","wide","","tall","","big","wide"],L=GALLERY.length?GALLERY:[1,2,3,4,5,6,7,8,9];
+(function(){var g=$("grid"),PAT=["big","","tall","wide","","tall","","big","wide"],L=GALLERY.slice();while(L.length<9)L.push("");
  L.forEach(function(v,i){var f=document.createElement("figure");f.className="t "+PAT[i%PAT.length];f.dataset.n=("0"+(i+1)).slice(-2);f.style.transitionDelay=(i%3)*.12+"s";
-  if(typeof v=="string"){var m=document.createElement("img");m.src=v;m.loading="lazy";m.alt="";f.appendChild(m)}else f.textContent="pic soon";g.appendChild(f)});
+  if(v){var m=document.createElement("img");m.onerror=function(){f.textContent="missing: "+v};m.src=v;m.loading="lazy";m.alt="";f.appendChild(m)}else f.textContent="pic soon";g.appendChild(f)});
  var io=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting){x.target.classList.add("in");io.unobserve(x.target)}})},{threshold:.15});
  g.querySelectorAll(".t").forEach(function(t){io.observe(t)});
  addEventListener("scroll",function(){$("hint").classList.toggle("off",scrollY>40)},{passive:true})})();
