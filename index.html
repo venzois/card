@@ -148,6 +148,19 @@ h1:hover{animation:gl .3s steps(2) 3}
 [data-theme=hacker]{--bg:#0a0203;--fg:#ffe5e5;--mut:#d98a8a;--acc:#ff2a3d;--g1:#7a0010;--g2:#3a0008;--g3:#1a0004;--p1:#ff2a3d;--p2:#4a0008;--star:255,60,80}
 @keyframes shake{0%,100%{transform:translate(0)}20%{transform:translate(-6px,3px) skewX(4deg)}40%{transform:translate(5px,-4px) skewX(-5deg)}60%{transform:translate(-4px,-2px)}80%{transform:translate(6px,4px) skewX(3deg)}}
 main.glitch{animation:shake .25s steps(2) 4;filter:hue-rotate(90deg) saturate(2)}
+#projects{padding-bottom:2rem}
+#faq{position:relative;z-index:2;max-width:640px;margin:0 auto;padding:1rem 1rem 8rem}
+#faq h2{text-align:center;font-weight:300;letter-spacing:.35em;text-transform:uppercase;font-size:1rem;color:var(--mut);margin:0 0 2rem;text-shadow:0 0 14px var(--acc)}
+.fq{border:1px solid color-mix(in srgb,var(--acc) 40%,transparent);border-radius:14px;margin-bottom:.7rem;background:color-mix(in srgb,var(--bg) 60%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);overflow:hidden;opacity:0;transform:translateY(30px);transition:opacity .6s,transform .6s,box-shadow .3s}
+.fq.in{opacity:1;transform:none}
+.fq.open{box-shadow:0 0 22px color-mix(in srgb,var(--acc) 45%,transparent)}
+.fq button{display:flex;width:100%;justify-content:space-between;align-items:center;gap:1rem;padding:1rem 1.1rem;background:none;border:0;font:inherit;font-size:.95rem;color:var(--fg);text-align:left;cursor:pointer}
+.fq button i{font-style:normal;color:var(--acc);font-size:1.3rem;line-height:1;flex:none;transition:transform .3s}
+.fq.open button i{transform:rotate(45deg)}
+.fa{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.fa p{margin:0;padding:0 1.1rem 1.1rem;color:var(--mut);font-size:.88rem;line-height:1.6}
+[data-style=retro] .fq{border-radius:0;border:3px solid var(--fg);background:var(--bg);box-shadow:5px 5px 0 var(--acc);backdrop-filter:none;-webkit-backdrop-filter:none}
+[data-style=minimal] .fq{border:0;border-bottom:1px solid color-mix(in srgb,var(--acc) 30%,transparent);border-radius:0;background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none}
 /* picker */
 #panel{position:fixed;z-index:5;left:50%;bottom:calc(.8rem + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;transition:.8s 1s;display:flex;gap:.8rem;align-items:center;padding:.5rem .8rem;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.15);border-radius:99px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);max-width:calc(100% - 1rem);overflow-x:auto}
 .show #panel{opacity:1;transform:translate(-50%,0)}
@@ -186,6 +199,7 @@ main.glitch{animation:shake .25s steps(2) 4;filter:hue-rotate(90deg) saturate(2)
 <section id="gallery"><h2>&lt;/&gt; gallery</h2><div class="grid" id="grid"></div></section>
 <div id="term"><div id="tbar"><span>ven@site — terminal</span><b id="tx">[esc]</b></div><div id="tout"></div><div id="tl"><span>ven@site:~$</span><input id="tin" autocomplete="off" autocapitalize="off" spellcheck="false"></div></div>
 <section id="projects"><h2>&lt;/&gt; projects</h2><div class="pgrid" id="pgrid"></div></section>
+<section id="faq"><h2>&lt;/&gt; faq</h2><div id="faqs"></div></section>
 <div id="glow"></div>
 <div id="panel"></div>
 <script>
@@ -221,34 +235,6 @@ var GALLERY=[
 var LYRICS=[
   [0,"♪"],
   [12,"             "],
-  [13,"hold my hand until we turn to ashes"],
-  [16,"love me til they put me in my casket"],
-  [20,"i got all these feeling that im masking"],
-  [24,"can i lay it on you thats what im asking"],
-  [26.5,"red wine kissing in the house that your parents"],
-  [30,"got for you, rented"],
-  [31.5,"howd you forget it?"],
-  [34,"i think about you and nothing else"],
-  [36,"so if you would just come over"],
-  [37.75,"i could show you for myself"],
-  [39,"its nights like these"],
-  [41,"when i need your love"],
-  [43,"when i need someone"],
-  [44.5,"thatll heal my soul"],
-  [46.5,"its nights like this"],
-  [49,"nights like, nights like this"],
-  [52,"ooh, ooh"],
-  [54,"♪"],
-  [58,"nights like these"],
-  [61,"♪"],
-  [64.5,"ooh, ooh"],
-  [66.5,"its nights like these"],
-  [68,"when i need your love"],
-  [70,"when i need someone"],
-  [71.25,"thatll heal my soul"],
-  [73,"its nights like this"],
-  [76,"nights like, nights like this"],
-  [79,"ooh, ooh"],  [12,"             "],
   [13,"hold my hand until we turn to ashes"],
   [16,"love me til they put me in my casket"],
   [20,"i got all these feeling that im masking"],
@@ -461,6 +447,77 @@ addEventListener("touchstart",function(e){var t=e.touches[0];tx0=t.clientX;ty0=t
 addEventListener("touchend",function(e){var t=e.changedTouches[0],dx=t.clientX-tx0,dy=t.clientY-ty0,ax=Math.abs(dx),ay=Math.abs(dy);
  if(ax<14&&ay<14&&Date.now()-tt0<300)konami("t");
  else if(ax>40||ay>40)konami(ax>ay?(dx>0?"ArrowRight":"ArrowLeft"):(dy>0?"ArrowDown":"ArrowUp"))},{passive:true});
+// weather overlay + pfp secret + more terminal commands
+var WEATHER="off",PFP_SECRET="you found the secret. hi";   // WEATHER: off | rain | snow | code
+var WX=document.createElement("canvas"),wg=WX.getContext("2d"),wmode=WEATHER,wp=[],WM=["off","rain","snow","code"];
+try{var sw0=localStorage.getItem("wx");if(SHOW_PICKER&&WM.indexOf(sw0)>-1)wmode=sw0}catch(e){}
+WX.style.cssText="position:fixed;inset:0;z-index:4;pointer-events:none";document.body.appendChild(WX);
+function wsize(){WX.width=innerWidth;WX.height=innerHeight;wp=[];
+ var n=wmode=="code"?Math.ceil(WX.width/18):wmode=="snow"?90:wmode=="rain"?140:0;
+ for(var i=0;i<n;i++)wp.push({x:wmode=="code"?i*18:Math.random()*WX.width,y:Math.random()*WX.height,v:wmode=="rain"?9+Math.random()*7:wmode=="snow"?.6+Math.random()*1.4:2+Math.random()*4,r:Math.random()*2+1.2,a:Math.random()*6})}
+addEventListener("resize",wsize);
+var wb=document.createElement("button");wb.className="st";
+function setWeather(m,save){wmode=m;wsize();wb.textContent="☁ "+m;if(save)try{localStorage.setItem("wx",m)}catch(e){}}
+wb.onclick=function(){setWeather(WM[(WM.indexOf(wmode)+1)%WM.length],1)};
+var s2=document.createElement("div");s2.className="sep";P.appendChild(s2);P.appendChild(wb);setWeather(wmode);
+(function wloop(){requestAnimationFrame(wloop);wg.clearRect(0,0,WX.width,WX.height);if(wmode=="off")return;
+ var cs=getComputedStyle(H),st=cs.getPropertyValue("--star").trim(),ac=cs.getPropertyValue("--acc").trim();
+ wp.forEach(function(p){p.a+=.03;p.y+=p.v;
+  if(wmode=="rain"){wg.strokeStyle="rgba("+st+",.45)";wg.lineWidth=1.2;wg.beginPath();wg.moveTo(p.x,p.y);wg.lineTo(p.x-2,p.y+14);wg.stroke()}
+  else if(wmode=="snow"){p.x+=Math.sin(p.a)*.6;wg.fillStyle="rgba("+st+",.85)";wg.beginPath();wg.arc(p.x,p.y,p.r,0,6.3);wg.fill()}
+  else{wg.font="14px monospace";wg.fillStyle=ac;for(var k=0;k<8;k++){wg.globalAlpha=1-k/8;wg.fillText(Math.random()>.5?"1":"0",p.x,p.y-k*16)}wg.globalAlpha=1}
+  if(p.y>WX.height+(wmode=="code"?130:20)){p.y=-20;if(wmode!="code")p.x=Math.random()*WX.width}})})();
+function confetti(x,y){var cl=["#ff4d6d","#ffd43b","#4dabf7","#69db7c","#a259ff","#ff922b"];
+ for(var i=0;i<40;i++){var s=document.createElement("i"),a=Math.random()*6.28,d=80+Math.random()*180;
+  s.style.cssText="position:fixed;z-index:65;pointer-events:none;width:8px;height:12px;left:"+x+"px;top:"+y+"px;background:"+cl[i%6];
+  document.body.appendChild(s);
+  s.animate([{transform:"translate(0,0) rotate(0deg)",opacity:1},{transform:"translate("+Math.cos(a)*d+"px,"+(Math.sin(a)*d+140)+"px) rotate("+Math.random()*720+"deg)",opacity:0}],{duration:1100+Math.random()*700,easing:"cubic-bezier(.2,.7,.4,1)"}).onfinish=(function(n){return function(){n.remove()}})(s)}}
+var pcn=0,pct;
+$("pfp").style.cssText+=";cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent";
+$("pfp").addEventListener("click",function(){var el=this;pcn++;clearTimeout(pct);pct=setTimeout(function(){pcn=0},1000);
+ el.animate([{transform:"scale(1)"},{transform:"scale(1.1)"},{transform:"scale(1)"}],{duration:150});
+ if(navigator.vibrate)navigator.vibrate(10);
+ if(pcn>=7){pcn=0;var r=el.getBoundingClientRect();
+  el.animate([{transform:"rotate(0deg) scale(1)"},{transform:"rotate(720deg) scale(1.25)"},{transform:"rotate(720deg) scale(1)"}],{duration:1200,easing:"ease-in-out"});
+  confetti(r.left+r.width/2,r.top+r.height/2);toast(PFP_SECRET);scramble($("name"),"ven")}});
+var BS="\u005c",CR=false;
+function crash(){if(CR)return;CR=true;term(false);
+ var d=document.createElement("div");d.style.cssText="position:fixed;inset:0;z-index:80;background:#000;color:#ddd;font:.8rem/1.6 ui-monospace,Menlo,monospace;padding:1.2rem;white-space:pre-wrap;overflow:hidden";document.body.appendChild(d);
+ var L=["removing /usr ...","removing /home ...","removing /boot ...","removing /ven/vibes ...","segmentation fault (core dumped)","","KERNEL PANIC: attempted to kill init!","","rebooting..."],i=0;
+ (function nx(){if(i>=L.length){setTimeout(function(){location.reload()},1800);setTimeout(function(){d.remove();CR=false},4500);return}d.textContent+=L[i++]+"\n";setTimeout(nx,i<5?250:500)})()}
+CMD.rm=function(){crash()};
+CMD.sudo=function(a){if(a=="rm")crash();else say("nice try")};
+CMD.weather=function(a){if(WM.indexOf(a)>-1){setWeather(a,1);say("weather → "+a)}else say("usage: weather "+WM.join("|"))};
+CMD.matrix=function(){setWeather("code",1);say("weather → code")};
+CMD.date=function(){say(new Date().toLocaleString())};
+CMD.neofetch=function(){say("ven@site","c");say("-------");say("OS:      ven.dev 1.0");say("Host:    "+(location.hostname||"localhost"));say("Theme:   "+H.dataset.theme+" / "+H.dataset.style);
+ say("Skills:  "+SKILLS.map(function(s){return s[0]}).join(", "));say("Weather: "+wmode);say("Uptime:  "+Math.floor(performance.now()/1000)+"s");say("Visits:  "+$("views").textContent);say("Shell:   ven-sh")};
+CMD.cowsay=function(){var t=(hist[hist.length-1].split(/\s+/).slice(1).join(" ")||"moo").slice(0,40),b="-".repeat(t.length+2);
+ say(" "+b);say("< "+t+" >");say(" "+b);say("        "+BS+"   ^__^");say("         "+BS+"  (oo)"+BS+"_______");say("            (__)"+BS+"       )"+BS+"/"+BS);say("                ||----w |");say("                ||     ||")};
+CMD.help=function(){say("help  whoami  socials  skills  projects  neofetch  cowsay <text>");say("theme <name>  style <name>  weather <mode>  matrix  music  date  ls  hack  clear  exit");say("themes: "+names(THEMES));say("styles: "+names(STYLES));say("weather: "+WM.join(", "))};
+// FAQ accordion
+var FAQ=[   // edit these: q = question, a = answer
+  {q:"what do you code?", a:"HTML, Python and Lua. check the projects section above."},
+  {q:"what song is playing?", a:"Nights Like These by The Kid LAROI."},
+  {q:"where can i dm you?", a:"discord: venzois_ (tap the discord icon to copy it)."},
+  {q:"your question here", a:"write your answer here."}
+];
+(function(){var box=$("faqs"),cur=null,io;if(!FAQ.length){$("faq").style.display="none";return}
+ io=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting){x.target.classList.add("in");io.unobserve(x.target)}})},{threshold:.15});
+ FAQ.forEach(function(f,i){var d=document.createElement("div");d.className="fq";d.style.transitionDelay=(i%4)*.1+"s";
+  d.innerHTML='<button type="button"><span></span><i>+</i></button><div class="fa"><p></p></div>';
+  d.querySelector("span").textContent=f.q;
+  var fa=d.querySelector(".fa"),p=fa.querySelector("p"),tm=null;
+  function shut(){clearInterval(tm);d.classList.remove("open");fa.style.maxHeight=fa.scrollHeight+"px";fa.offsetHeight;fa.style.maxHeight="0px";p.textContent=f.a}
+  d.querySelector("button").onclick=function(){
+   if(cur&&cur!==shut)cur();
+   if(d.classList.contains("open")){shut();cur=null;return}
+   cur=shut;d.classList.add("open");p.textContent=f.a;fa.style.maxHeight=p.scrollHeight+24+"px";p.textContent="";
+   var n=0,step=Math.max(1,Math.ceil(f.a.length/45));clearInterval(tm);
+   tm=setInterval(function(){n+=step;p.textContent=f.a.slice(0,n);if(n>=f.a.length){clearInterval(tm);p.textContent=f.a}},20)};
+  box.appendChild(d);io.observe(d)})})();
+CMD.faq=function(){FAQ.forEach(function(f,i){say((i+1)+". "+f.q);say("   "+f.a)})};
+CMD.help=function(){say("help  whoami  socials  skills  projects  faq  neofetch  cowsay <text>");say("theme <name>  style <name>  weather <mode>  matrix  music  date  ls  hack  clear  exit");say("themes: "+names(THEMES));say("styles: "+names(STYLES));say("weather: "+WM.join(", "))};
 // music
 var ac,master,on=true;
 function music(){if(MUSIC_URL){var a=AU=new Audio(MUSIC_URL);a.loop=true;a.volume=.5;a.play().catch(function(){});master={gain:{set value(v){a.volume=v>0?.5:0}}};
