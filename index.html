@@ -89,7 +89,6 @@ h1:hover{animation:gl .3s steps(2) 3}
 .t img{width:100%;height:100%;object-fit:cover;display:block}
 [data-style=retro] .t{border-radius:0!important;border:3px solid var(--fg);box-shadow:6px 6px 0 var(--acc)}
 [data-style=minimal] .t{border-radius:0!important;border:0}
- 
 #lyrics{position:relative;z-index:2;max-width:560px;margin:0 auto;padding:3rem 1rem 0;text-align:center}
 .ly{position:relative;height:15rem;overflow-y:auto;scroll-behavior:smooth;scrollbar-width:none;padding:6rem 0;-webkit-mask-image:linear-gradient(transparent,#000 25%,#000 75%,transparent);mask-image:linear-gradient(transparent,#000 25%,#000 75%,transparent)}
 .ly::-webkit-scrollbar{display:none}
@@ -98,12 +97,14 @@ h1:hover{animation:gl .3s steps(2) 3}
 .ly p.on{opacity:1;color:var(--fg);font-size:1.4rem;text-shadow:0 0 18px var(--acc);transform:scale(1.04)}
 .lh{font-size:.68rem;color:var(--mut);letter-spacing:.2em;text-transform:uppercase;opacity:.6;margin:.5rem 0 0}
 [data-style=retro] .ly p.on{color:var(--acc);text-shadow:2px 2px 0 var(--fg)}
-
- #lyrics{padding:0;margin:.9rem 0 0;max-width:none}
+#lyrics{padding:0;margin:.9rem 0 0;max-width:none}
 .ly{height:6.5rem;padding:2.2rem 0}
 .ly p{font-size:.85rem;margin:.4rem 0}
 .ly p.on{font-size:1.05rem}
- 
+#lyrics.own{position:relative;z-index:2;max-width:560px;margin:0 auto;padding:3rem 1rem 0;text-align:center}
+#lyrics.own .ly{height:15rem;padding:6rem 0}
+#lyrics.own .ly p{font-size:1rem;margin:.55rem 0}
+#lyrics.own .ly p.on{font-size:1.4rem}
 /* picker */
 #panel{position:fixed;z-index:5;left:50%;bottom:calc(.8rem + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;transition:.8s 1s;display:flex;gap:.8rem;align-items:center;padding:.5rem .8rem;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.15);border-radius:99px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);max-width:calc(100% - 1rem);overflow-x:auto}
 .show #panel{opacity:1;transform:translate(-50%,0)}
@@ -136,7 +137,6 @@ h1:hover{animation:gl .3s steps(2) 3}
   </section>
   <div class="hint" id="hint">scroll down<i></i></div>
 </main>
-<section id="lyrics"><h2>♪ lyrics</h2><div class="ly" id="ly"></div><p class="lh">tap a line to jump there</p></section>
 <section id="gallery"><h2>&lt;/&gt; gallery</h2><div class="grid" id="grid"></div></section>
 <div id="glow"></div>
 <div id="panel"></div>
@@ -144,6 +144,7 @@ h1:hover{animation:gl .3s steps(2) 3}
 // ——— edit these ———
 var DEFAULT_THEME="purple";   // purple | reeses | ocean | sakura | matrix
 var DEFAULT_STYLE="glass";    // glass | neon | retro | minimal
+var LYRICS_IN_CARD=true;      // true = lyrics inside the card | false = own section below the card
 var MUSIC_URL="nightslikethese.mp3";             // link to YOUR audio file (mp3) once you host this page yourself; empty = built-in ambient tune
 var MUSIC_TITLE="Nights Like These · The Kid LAROI";  // shown only when MUSIC_URL is set
 // ——— GALLERY: your picture file names, in order (keep the pictures in the same folder as index.html) ———
@@ -275,6 +276,9 @@ function seek(t){if(AU){AU.currentTime=t;AU.play().catch(function(){})}else T0=p
 setInterval(function(){var t=now(),k=-1;LYRICS.forEach(function(l,i){if(l[0]<=t)k=i});
  if(k==cur)return;cur=k;var ps=LY.children;for(var i=0;i<ps.length;i++)ps[i].classList.toggle("on",i==k);
  if(k>-1){var e=ps[k];LY.scrollTop=e.offsetTop-LY.clientHeight/2+e.offsetHeight/2}},250);
+if(!LYRICS_IN_CARD){var L2=$("lyrics");L2.classList.add("own");document.body.insertBefore(L2,$("gallery"));
+ var h=document.createElement("h2");h.textContent="♪ lyrics";L2.insertBefore(h,L2.firstChild);
+ var hp=document.createElement("p");hp.className="lh";hp.textContent="tap a line to jump there";L2.appendChild(hp)}
 // music
 var ac,master,on=true;
 function music(){if(MUSIC_URL){var a=AU=new Audio(MUSIC_URL);a.loop=true;a.volume=.5;a.play().catch(function(){});master={gain:{set value(v){a.volume=v>0?.5:0}}};$("np").textContent="♪ "+MUSIC_TITLE;return}
