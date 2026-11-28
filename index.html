@@ -118,6 +118,29 @@ h1:hover{animation:gl .3s steps(2) 3}
 #tl{display:flex;gap:.5rem;align-items:center;margin-top:.4rem}
 #tl span{color:var(--acc);white-space:nowrap}
 #tin{flex:1;min-width:0;background:none;border:0;outline:0;color:var(--fg);font:inherit;font-size:16px;caret-color:var(--acc)}
+.skills{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem;margin:-.3rem 0 1.2rem}
+.chip{--c:var(--acc);display:inline-flex;align-items:center;gap:.4rem;padding:.3rem .75rem;font-size:.78rem;border-radius:99px;color:var(--fg);cursor:default;border:1px solid color-mix(in srgb,var(--c) 55%,transparent);background:color-mix(in srgb,var(--c) 12%,transparent);transition:.25s}
+.chip::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c)}
+.chip:hover{transform:translateY(-3px) scale(1.07);box-shadow:0 0 16px var(--c);background:color-mix(in srgb,var(--c) 28%,transparent)}
+[data-style=retro] .chip{border-radius:0;border:2px solid var(--fg)}
+[data-style=minimal] .chip{border:0;border-radius:0}
+#gallery{padding-bottom:3rem}
+#projects{position:relative;z-index:2;max-width:900px;margin:0 auto;padding:1rem 1rem 8rem}
+#projects h2{text-align:center;font-weight:300;letter-spacing:.35em;text-transform:uppercase;font-size:1rem;color:var(--mut);margin:0 0 2rem;text-shadow:0 0 14px var(--acc)}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1rem}
+.pc{--mx:50%;--my:50%;position:relative;display:block;overflow:hidden;padding:1.3rem 1.2rem;border-radius:18px;color:var(--fg);text-decoration:none;border:1px solid color-mix(in srgb,var(--acc) 40%,transparent);background:color-mix(in srgb,var(--bg) 60%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:0;transform:translateY(40px);transition:opacity .7s,transform .7s,box-shadow .3s}
+.pc.in{opacity:1;transform:none}
+.pc.in:hover{transform:translateY(-6px);box-shadow:0 0 28px color-mix(in srgb,var(--acc) 55%,transparent)}
+.pc::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(180px circle at var(--mx) var(--my),color-mix(in srgb,var(--acc) 30%,transparent),transparent 70%);opacity:0;transition:opacity .3s}
+.pc:hover::before{opacity:1}
+.pc h3{margin:0 0 .35rem;font-size:1.05rem;letter-spacing:.03em}
+.pc p{margin:0 0 .9rem;font-size:.85rem;color:var(--mut);line-height:1.45}
+.pt{display:flex;flex-wrap:wrap;gap:.35rem}
+.pt span{font:.68rem ui-monospace,Menlo,monospace;padding:.15rem .5rem;border-radius:6px;border:1px solid color-mix(in srgb,var(--acc) 40%,transparent);color:var(--mut)}
+.go{position:absolute;top:1rem;right:1.1rem;font-style:normal;color:var(--acc);transition:transform .25s}
+.pc:hover .go{transform:translate(3px,-3px)}
+[data-style=retro] .pc{border-radius:0;border:3px solid var(--fg);background:var(--bg);box-shadow:6px 6px 0 var(--acc);backdrop-filter:none;-webkit-backdrop-filter:none}
+[data-style=minimal] .pc{border-radius:0;border:0;background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none}
 /* picker */
 #panel{position:fixed;z-index:5;left:50%;bottom:calc(.8rem + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;transition:.8s 1s;display:flex;gap:.8rem;align-items:center;padding:.5rem .8rem;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.15);border-radius:99px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);max-width:calc(100% - 1rem);overflow-x:auto}
 .show #panel{opacity:1;transform:translate(-50%,0)}
@@ -138,6 +161,7 @@ h1:hover{animation:gl .3s steps(2) 3}
     <h1 id="name">ven</h1>
     <div class="tag" id="tag"></div>
     <div class="meta"><span id="badge" title="click me">&lt;/&gt;</span><span id="np">♪ music</span><span id="tn" title="click me"></span></div>
+    <div class="skills" id="skills"></div>
     <nav class="links">
       <a href="https://instagram.com/jnd.x2" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8"/></svg></a>
       <a href="https://www.roblox.com/users/profile?username=okxdoko7" target="_blank" rel="noopener" aria-label="Roblox" title="Roblox"><svg class="f" viewBox="0 0 24 24"><path d="M18.926 23.998 0 18.892 5.075.002 24 5.108ZM15.348 10.09l-5.282-1.453-1.414 5.273 5.282 1.453z"/></svg></a>
@@ -152,12 +176,19 @@ h1:hover{animation:gl .3s steps(2) 3}
 </main>
 <section id="gallery"><h2>&lt;/&gt; gallery</h2><div class="grid" id="grid"></div></section>
 <div id="term"><div id="tbar"><span>ven@site — terminal</span><b id="tx">[esc]</b></div><div id="tout"></div><div id="tl"><span>ven@site:~$</span><input id="tin" autocomplete="off" autocapitalize="off" spellcheck="false"></div></div>
+<section id="projects"><h2>&lt;/&gt; projects</h2><div class="pgrid" id="pgrid"></div></section>
 <div id="glow"></div>
 <div id="panel"></div>
 <script>
 // ——— edit these ———
 var DEFAULT_THEME="purple";   // purple | reeses | ocean | sakura | matrix
 var DEFAULT_STYLE="glass";    // glass | neon | retro | minimal
+var SKILLS=[["HTML","#ff6a3d"],["Python","#ffd43b"],["Lua","#5b8cff"]];   // [name, glow color]
+var PROJECTS=[   // link:"" = a card with no link
+  {name:"Speak Yo", desc:"text-to-speech website", tags:["HTML","JS"], link:""},
+  {name:"This page", desc:"the bio page you're looking at", tags:["HTML","CSS","JS"], link:""},
+  {name:"Project name", desc:"what it does, in one line", tags:["Lua"], link:""}
+];
 var BOOT_LINES=["> booting ven.dev ...","> loading assets ........ [ok]","> syncing music ........ [ok]","> night mode ........... [on]","> ready."];   // lines typed on the intro screen
 var LYRICS_IN_CARD=true;      // true = lyrics inside the card | false = own section below the card
 var MUSIC_URL="nightslikethese.mp3";             // link to YOUR audio file (mp3) once you host this page yourself; empty = built-in ambient tune
@@ -329,6 +360,20 @@ TI.onkeydown=function(e){
 addEventListener("keydown",function(e){if(e.key=="Escape")term(false);else if(e.key=="`"){e.preventDefault();term(!TM.classList.contains("open"))}});
 $("tx").onclick=function(){term(false)};
 var bc=0,bt;$("badge").addEventListener("click",function(){bc++;clearTimeout(bt);bt=setTimeout(function(){bc=0},700);if(bc>=3){bc=0;term(true)}});
+// skill chips + project cards
+(function(){var sk=$("skills");SKILLS.forEach(function(s){var c=document.createElement("span");c.className="chip";c.textContent=s[0];c.style.setProperty("--c",s[1]||"var(--acc)");sk.appendChild(c)});
+ var pg=$("pgrid");if(!PROJECTS.length)$("projects").style.display="none";
+ PROJECTS.forEach(function(p,i){var a=document.createElement(p.link?"a":"div");a.className="pc";if(p.link){a.href=p.link;a.target="_blank";a.rel="noopener"}
+  a.style.transitionDelay=(i%3)*.12+"s";
+  a.innerHTML='<h3></h3><p></p><div class="pt"></div>'+(p.link?'<i class="go">\u2197</i>':"");
+  a.querySelector("h3").textContent=p.name;a.querySelector("p").textContent=p.desc||"";
+  (p.tags||[]).forEach(function(t){var s=document.createElement("span");s.textContent=t;a.querySelector(".pt").appendChild(s)});
+  a.addEventListener("mousemove",function(e){var r=a.getBoundingClientRect();a.style.setProperty("--mx",e.clientX-r.left+"px");a.style.setProperty("--my",e.clientY-r.top+"px")});
+  pg.appendChild(a)});
+ var io=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting){x.target.classList.add("in");io.unobserve(x.target)}})},{threshold:.15});
+ pg.querySelectorAll(".pc").forEach(function(c){io.observe(c)})})();
+CMD.skills=function(){say(SKILLS.map(function(s){return s[0]}).join("  "))};
+CMD.projects=function(){PROJECTS.forEach(function(p){say(p.name+(p.link?" → "+p.link:"")+(p.desc?"  — "+p.desc:""))})};
 // music
 var ac,master,on=true;
 function music(){if(MUSIC_URL){var a=AU=new Audio(MUSIC_URL);a.loop=true;a.volume=.5;a.play().catch(function(){});master={gain:{set value(v){a.volume=v>0?.5:0}}};$("np").textContent="♪ "+MUSIC_TITLE;return}
